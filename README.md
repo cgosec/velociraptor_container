@@ -27,6 +27,6 @@ If you change the password, you should delete your browser data since I had some
 # Custom config
 simply replace
 
-            velo_container/data/velociraptor/config/server.config.yml
+      velo_container/data/velociraptor/config/server.config.yml
 
 with your config (likely restarting the container is needed - did not test yet)
