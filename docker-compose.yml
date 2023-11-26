@@ -1,0 +1,22 @@
+version: "3.3"
+
+services:
+  velociraptor:
+    build:
+      context: .
+      args:
+        ADMIN_USER: ${ADMIN_USER:-admin}
+        ADMIN_PASSWORD: ${ADMIN_PASSWORD:-diggingdeeper}
+    command: sh -c "cp /velo_config/server.config.yml /custom_velo_config/server.config.yml && velociraptor gui --logfile=/logs/velo.logs --datastore=/velo_data --max_wait=${MAXWAIT:-10} --nobrowser -c /custom_velo_config/server.config.yml"
+    restart: unless-stopped
+    ports:
+      - ${GUI_PORT:-8889}:8889
+      - ${FRONTEND_PORT:-8000}:8000
+      - ${API_PORT:-8001}:8001
+      - ${MONITORING_PORT:-8003}:8003
+    environment:
+      - MAX_WAIT=${MAX_WAIT:-10}
+    volumes:
+      - ./data/velociraptor/config:/custom_velo_config
+      - ./data/velociraptor/data:/velo_data
+      - ./data/velociraptor/logs:/logs
