@@ -1,0 +1,70 @@
+version: "3.3"
+
+networks:
+  velonet:
+    ipam:
+      driver: default
+      config:
+        - subnet: ${VPN_NETWORK:-192.168.252.0/24}
+
+services:
+  velociraptor:
+    build:
+      context: .
+      args:
+        ADMIN_USER: ${ADMIN_USER:-admin}
+        ADMIN_PASSWORD: ${ADMIN_PASSWORD:-diggingdeeper}
+    command: sh -c "cp -n /velo_config/server.config.yml /custom_velo_config/server.config.yml && cp -n -r /velociraptor/output/ /output && velociraptor gui --logfile=/logs/velo.logs --datastore=/velo_data --max_wait=${MAXWAIT:-10} --nobrowser -c /custom_velo_config/server.config.yml"
+    restart: unless-stopped
+    ports:
+      #- ${GUI_PORT:-8889}:8889 not needed in VPN config
+      - ${FRONTEND_PORT:-8000}:8000
+      - ${API_PORT:-8001}:8001
+      - ${MONITORING_PORT:-8003}:8003
+    environment:
+      - MAX_WAIT=${MAX_WAIT:-10}
+    volumes:
+      - ./data/velociraptor/config:/custom_velo_config
+      - ./data/velociraptor/data:/velo_data
+      - ./data/velociraptor/logs:/logs
+      - ./data/velociraptor/output:/output
+    networks:
+      velonet:
+        ipv4_address: ${VELO_IP:-192.168.252.10}
+
+  binaryserver:
+    image: python
+    command: ["python3", "-m", "http.server", "8080", "--directory", "/output/output"]
+    volumes:
+      - ./data/velociraptor/output:/output
+    networks:
+      velonet:
+        ipv4_address: ${BINARY_IP:-192.168.252.11}
+
+  vpn:
+    image: lscr.io/linuxserver/wireguard:latest
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Africa/Abidjan
+      - SERVERURL=${SERVERURL:-localhost} #optional
+      - SERVERPORT=${VPN_PORT:-51820} #optional
+      - PEERS=${PEERS:-10} #optional
+#      - PEERDNS=auto #optional
+#       - INTERNAL_SUBNET=9.13.13.0 #optional
+      - ALLOWEDIPS=${VPN_NETWORK:-192.168.252.0/24} #optional
+#      - LOG_CONFS=true #optional
+    volumes:
+      - ./data/wireguard/appdata/config:/config
+      - ./data/wireguard/lib/modules:/lib/modules
+    ports:
+      - ${VPN_PORT:-51820}:51820/udp
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    restart: unless-stopped
+    networks:
+      velonet:
+        ipv4_address: ${VPN_IP:-192.168.252.254}
