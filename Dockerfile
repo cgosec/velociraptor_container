@@ -36,6 +36,7 @@ RUN export PATH=$PATH:/root/go/bin:/usr/local/go/bin && \
         make linux && \
         make windows
 ARG FRONTEND_HOST=velociraptor
+# add "proxy_header":"X-Origin-IP to the Frontend:... to get the IP from the Client if you run Velo behind a reverse proxy. X-Origin-IP must be configured in the proxy 
 ARG CONFIG_OVERRIDE='{"Client":{"server_urls":["'${URL}':'${FRONTEND_PORT}'/"]},"GUI":{"links":[{"text":"Blauhaunt","new_tab":true,"type":"sidebar","url":"/Blauhaunt/"}],"bind_address":"0.0.0.0","reverse_proxy":[{"route":"/Blauhaunt/","url":"file:///Blauhaunt/app/"}]},"Frontend":{"hostname":"'$FRONTEND_HOST'","bind_address":"0.0.0.0","bind_port":8000},"API":{"hostname":"velociraptor","bind_address":"0.0.0.0","bind_port":8001,"bind_scheme":"tcp"}}'
 RUN echo $CONFIG_OVERRIDE
 RUN cd output && \
