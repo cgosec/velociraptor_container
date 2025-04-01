@@ -10,7 +10,7 @@ services:
         URL: ${CONFIG_URL:-https://localhost} # your exposed URL the Frontend Port will automatically be added e.g. https://localhost:8000/ this is important for client configuration
         FRONTEND_PORT: ${FRONTEND_PORT:-8000}  # this is important for the client config. the Port inside the container will not be changed
         FRONTEND_HOST: velociraptor # MUST MATCH SERVICE NAME! (needed for working with minions)
-    command: sh -c "cp -n /velo_config/server.config.yml /custom_velo_config/server.config.yml && cp -n -r /velociraptor/output/ /output && velociraptor frontend --logfile=/logs/velo.logs --max_wait=${MAXWAIT:-10} -c /custom_velo_config/server.config.yml"    restart: unless-stopped
+    command: sh -c "cp -n /velo_config/server.config.yml /custom_velo_config/server.config.yml && cp -u -r /velociraptor/output/ /output && velociraptor frontend --logfile=/logs/velo.logs --max_wait=${MAXWAIT:-10} -c /custom_velo_config/server.config.yml"    restart: unless-stopped
     ports:
       - ${GUI_PORT:-8889}:8889
       - ${FRONTEND_PORT:-8000}:8000
