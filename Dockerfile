@@ -36,7 +36,7 @@ RUN export PATH=$PATH:/root/go/bin:/usr/local/go/bin && \
         make windows
 RUN cd output && \
         cp $(find | grep linux) /usr/bin/velociraptor && \
-        # velociraptor config generate > -o "{'GUI': {'public_url': '$URL', 'links': [{'text': 'Blauhaunt', 'new_tab': true, 'type': 'sidebar', 'url': '/Blauhaunt/'}], 'bind_address': '0.0.0.0', 'reverse_proxy': [{'route': '/Blauhaunt/', 'url': 'file:///Blauhaunt/app/'}]}}" /velo_config/server.config.yml && \
-RUN     velociraptor  --config /velo_config/server.config.yml user add --role=administrator $ADMIN_USER $ADMIN_PASSWORD && \
+        velociraptor config generate -o "{'GUI': {'public_url': '$URL', 'links': [{'text': 'Blauhaunt', 'new_tab': true, 'type': 'sidebar', 'url': '/Blauhaunt/'}], 'bind_address': '0.0.0.0', 'reverse_proxy': [{'route': '/Blauhaunt/', 'url': 'file:///Blauhaunt/app/'}]}}" > /velo_config/server.config.yml && \
+        velociraptor  --config /velo_config/server.config.yml user add --role=administrator $ADMIN_USER $ADMIN_PASSWORD && \
         history -d 1
 CMD velociraptor gui --logfile=/logs/velo.logs --datastore=/velo_data --max_wait=$MAXWAIT --nobrowser -c /velo_config/server.config.yml
