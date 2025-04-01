@@ -39,7 +39,7 @@ ARG FRONTEND_HOST=velociraptor
 # Frontend: ... "proxy_header":"X-Origin-IP to get the IP from the Client if you run Velo Frontend behind a reverse proxy. X-Origin-IP must be configured in the proxy 
 # Frontend:... "use_plain_http":true,"proxy":"<PROXY>" if Frontend is running behind a reverse proxy to spare decryption overhead
 # GUI: ... "use_plain_http":true if running GUI is behind reverse proxy
-ARG CONFIG_OVERRIDE='{"Client":{"server_urls":["'${URL}':'${FRONTEND_PORT}'/"]},"GUI":{"links":[{"text":"Blauhaunt","new_tab":true,"type":"sidebar","url":"/Blauhaunt/"}],"bind_address":"0.0.0.0","reverse_proxy":[{"route":"/Blauhaunt/","url":"file:///Blauhaunt/app/"}]},"Frontend":{"hostname":"'$FRONTEND_HOST'","bind_address":"0.0.0.0","bind_port":8000},"API":{"hostname":"velociraptor","bind_address":"0.0.0.0","bind_port":8001,"bind_scheme":"tcp"}}'
+ARG CONFIG_OVERRIDE='{"Client":{"server_urls":["'${URL}':'${FRONTEND_PORT}'/"]},"GUI":{"links":[{"text":"Blauhaunt","new_tab":true,"type":"sidebar","url":"/Blauhaunt/"},{"text":"Blauhaunt Latest","new_tab":true,"type":"sidebar","url":"/Blauhaunt/latest"}],"bind_address":"0.0.0.0","reverse_proxy":[{"route":"/Blauhaunt/","url":"file:///Blauhaunt/app/"},{"route":"/Blauhaunt/latest/","url":"https://cgosec.github.io/Blauhaunt/app/"}]},"Frontend":{"hostname":"'$FRONTEND_HOST'","bind_address":"0.0.0.0","bind_port":8000},"API":{"hostname":"velociraptor","bind_address":"0.0.0.0","bind_port":8001,"bind_scheme":"tcp"}}'
 RUN echo $CONFIG_OVERRIDE
 RUN cd output && \
         cp $(find | grep linux) /usr/bin/velociraptor && \
