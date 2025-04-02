@@ -1,10 +1,5 @@
 FROM alpine
 LABEL version='Velociraptor'
-ENV MAXWAIT=10
-ARG ADMIN_USER=admin
-ARG ADMIN_PASSWORD=diggingdeeper
-ARG URL=localhost
-ARG FRONTEND_PORT=8000
 EXPOSE 8000
 EXPOSE 8001
 EXPOSE 8003
@@ -35,6 +30,11 @@ RUN export PATH=$PATH:/usr/local/go/bin && \
 RUN export PATH=$PATH:/root/go/bin:/usr/local/go/bin && \
         make linux && \
         make windows
+ENV MAXWAIT=10
+ARG ADMIN_USER=admin
+ARG ADMIN_PASSWORD=diggingdeeper
+ARG URL=localhost
+ARG FRONTEND_PORT=8000
 ARG FRONTEND_HOST=velociraptor
 # Frontend: ... "proxy_header":"X-Origin-IP to get the IP from the Client if you run Velo Frontend behind a reverse proxy. X-Origin-IP must be configured in the proxy 
 # Frontend:... "use_plain_http":true,"proxy":"<PROXY>" if Frontend is running behind a reverse proxy to spare decryption overhead
