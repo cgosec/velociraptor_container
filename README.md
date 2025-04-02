@@ -7,7 +7,7 @@ A Dockerfile and a docker-compose stack for automatically building the latest ve
 
       cd velociraptor_container
 
-      cp .env.sample .env
+      cp .env.sample .env && chmod 600 .env
 
 change data in .env file as needed
 
